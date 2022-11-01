@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
-import streamlit as st 
+
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
-from datetime import datetime
+
 from sklearn.metrics.pairwise import cosine_similarity
-from typing import List
+
 from collections import OrderedDict 
 
 data = pd.read_csv('combined_data.csv')
