@@ -21,6 +21,14 @@ content_based_info = pd.DataFrame(data.drop(columns = ['title', 'userId', 'times
 
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"])
 
 def show_recommendations(movieId):    
     movieId = get_mid(movieId)
