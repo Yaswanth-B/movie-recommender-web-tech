@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+ 
 import pandas as pd
 import numpy as np
 from fastapi import FastAPI, Response, status
@@ -45,7 +45,7 @@ def show_recommendations(movieId):
     result = content_based_info.loc[result,:].sort_values(by = 'rating').index[0:10]
     result = movies.loc[result,'disptitle']
     mid = get_id(result)      
-    return {"recommendations:" : get_tid(mid) } 
+    return { "result": get_tid(mid) }
 
 def get_tid(arr):
     arr = [int(i) for i in arr]     
@@ -88,11 +88,11 @@ def query_results(query):
     results_dict = dict(zip(keys,values))
     final_results = OrderedDict(results_dict.items())
     
-    return {"results" : list(final_results.keys()) }
+    return { "result":list(final_results.keys())}
 
 def cold_start():
     highly_rated = content_based_info.sort_values(by=['rating'], ascending = False).index.values[0:20]    
-    return { "cold" : get_tid(highly_rated) }
+    return { "result" : get_tid(highly_rated) }
 
 def get_id(names):
     id = []
