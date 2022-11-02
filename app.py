@@ -7,7 +7,7 @@ from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 
 from sklearn.metrics.pairwise import cosine_similarity
-
+from fastapi.middleware.cors import CORSMiddleware
 from collections import OrderedDict 
 
 data = pd.read_csv('combined_data.csv')
