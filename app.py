@@ -20,7 +20,7 @@ content_based_info = pd.DataFrame(data.drop(columns = ['title', 'userId', 'times
 ids = np.array(links[['tmdbId']]).ravel()
 
 
-app = FastAPI()
+app = FastAPI(debug = True)
 
 origins = ["*"]
 
@@ -34,7 +34,7 @@ app.add_middleware(
 
 def show_recommendations(movieId):    
     movieId = get_mid(movieId)  
-      
+    
     def collaborative_cosine(movieId, data):    
         movie_indices = data.index   
         index = np.where(movie_indices == movieId)    
@@ -120,15 +120,16 @@ def home():
 @app.get('/recommendations/')
 def recommendations(options: str):
     
-    options = list(map(int, options.strip().split(" "))) 
+    options = list(map(int, options.split(" "))) 
     result = show_recommendations(options)
+    
     if(len(result)==0):
         return {"result":"no recommendations"}   
-    elif(np.isin(options, ids)):
-        
-        return {"result":result}
-    else:
-        return {"result":"invalid"}
+    elif(set(options).issubset(set(ids))):
+        return {"result":result} 
+    else:       
+        return {"result":"not in tmdbid"}
+   
    
     
 
