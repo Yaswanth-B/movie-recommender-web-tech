@@ -120,15 +120,15 @@ def home():
 @app.get('/recommendations/')
 def recommendations(options: str):
     
-    options = list(map(int, options.split(" "))) 
+    options = list(map(int, options.strip().split(" "))) 
     result = show_recommendations(options)
-    if(len(result) == 0):
-        return {"result":"no recommendations"}
+    if(len(result)==0):
+        return {"result":"no recommendations"}   
     elif(np.isin(options, ids)):
         
         return {"result":result}
     else:
-        return {"result":"invalid ids"}
+        return {"result":"invalid"}
    
     
 
