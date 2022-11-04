@@ -121,12 +121,14 @@ def home():
 def recommendations(options: str):
     
     options = list(map(int, options.split(" "))) 
-           
-    if(np.isin(options, ids)):
-        result = show_recommendations(options)
+    result = show_recommendations(options)
+    if(len(result) == 0):
+        return {"result":"no recommendations"}
+    elif(np.isin(options, ids)):
+        
         return {"result":result}
     else:
-        return {"result":"invalid"}
+        return {"result":"invalid ids"}
    
     
 
