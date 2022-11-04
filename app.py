@@ -17,6 +17,7 @@ links = pd.read_csv('links.csv', index_col = 'movieId')
     
 pivot_table = data.pivot(index = 'movieId', columns = 'userId', values = 'rating').fillna(0)
 content_based_info = pd.DataFrame(data.drop(columns = ['title', 'userId', 'timestamp', '(no genres listed)']).groupby(by = 'movieId').mean())
+ids = np.array(links[['tmdbId']]).ravel()
 
 
 app = FastAPI()
@@ -30,9 +31,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"])
 
+
 def show_recommendations(movieId):    
-    movieId = get_mid(movieId)
-    
+    movieId = get_mid(movieId)  
+      
     def collaborative_cosine(movieId, data):    
         movie_indices = data.index   
         index = np.where(movie_indices == movieId)    
@@ -47,13 +49,13 @@ def show_recommendations(movieId):
     
     
     result = []
-    for i in range(0,len(movieId)):   
-        result.extend(collaborative_cosine(movieId[i], pivot_table))
+    for i in range(0,len(movieId)):
+            result.extend(collaborative_cosine(movieId[i], pivot_table))        
     result = list(dict.fromkeys(result))
     result = content_based_info.loc[result,:].sort_values(by = 'rating').index[0:10]
     result = movies.loc[result,'disptitle']
     mid = get_id(result)      
-    return { "result": get_tid(mid) }
+    return get_tid(mid)
 
 def get_tid(arr):
     arr = [int(i) for i in arr]     
@@ -117,11 +119,16 @@ def home():
 
 @app.get('/recommendations/')
 def recommendations(options: str):
-    options = list(map(int, options.split(" ")))        
+    
+    options = list(map(int, options.split(" "))) 
            
+    if(np.isin(options, ids)):
+        result = show_recommendations(options)
+        return {"result":result}
+    else:
+        return {"result":"invalid"}
    
-    result = show_recommendations(options)
-    return result
+    
 
 @app.get('/search/{query}')
 def search(query:str):    
